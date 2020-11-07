@@ -27,7 +27,13 @@ class AdoptionPage extends Component {
             people
         })
 
-        setInterval(apiService.dequeuePerson(), 5000);
+        setInterval(this.intervalCondition(), 5000);
+    }
+
+    intervalCondition() {
+        if (this.state.people[0] !== this.state.inLine || this.state.people.length <= 1) {
+            this.startAdopting();
+        }    
     }
 
     startAdopting = () => {
@@ -81,9 +87,7 @@ class AdoptionPage extends Component {
                 people
             }));
         const adopting = setInterval(this.startAdopting(), 5000);
-        if (this.state.people.length === 1) {
-            clearInterval(adopting)
-        }               
+                   
     }
 
     render() {
