@@ -3,10 +3,6 @@ import apiService from '../../API-utilities/API-utilities';
 import Pet from '../Pet/Pet';
 import People from '../People/People';
 
-const getRandomInt = (max) => {
-    return Math.floor(Math.random() * Math.floor(max));
-}
-
 class AdoptionPage extends Component {
     state = {
         cat: {},
@@ -14,6 +10,7 @@ class AdoptionPage extends Component {
         people: [],
         signup: "",
         inLine: "",
+        readyToAdopt: false,
     }
 
     async componentDidMount() {
@@ -43,13 +40,16 @@ class AdoptionPage extends Component {
     startAdopting = () => {
         console.log('start adopting ran')
         apiService.dequeuePerson();
-        apiService.getPeople().then(people => this.setState({ people }))               
-        if (this.state.people.length % 2 === 0) {            
+        apiService.getPeople().then(people => this.setState({ people }));               
+        if (this.state.people.length % 2 === 0) {
+            console.log('should adopt out dog')            
             apiService.dequeueAdoptedDog() 
-            apiService.getDogs().then(dog => this.setState({dog})            
-        }            
+            apiService.getDogs().then(dog => this.setState({dog}))            
+        } else {
+        console.log('should adopt out cat');            
         apiService.dequeueAdoptedCat()
-        apiService.getCats().then(cat => this.setState({cat})       
+        apiService.getCats().then(cat => this.setState({cat}))
+        }       
     }
 
     handleAdoptDogClick = (event) => {
@@ -98,10 +98,14 @@ class AdoptionPage extends Component {
         return (
             <div>
                 <Pet
+                    readyToAdopt={this.state.people[0]}
+                    inLine={this.state.inLine}
                     pet={this.state.cat}
                     handleClick={this.handleAdoptCatClick} />
 
                 <Pet
+                    readyToAdopt={this.state.people[0]}
+                    inLine={this.state.inLine}
                     pet={this.state.dog}
                     handleClick={this.handleAdoptDogClick} />
 
