@@ -3,12 +3,17 @@ import apiService from '../../API-utilities/API-utilities';
 import Pet from '../Pet/Pet';
 import People from '../People/People';
 
+const getRandomInt = (max) => {
+    return Math.floor(Math.random() * Math.floor(max));
+}
+
 class AdoptionPage extends Component {
     state = {
         cat: {},
         dog: {},
         people: [],
-        signup: null,
+        signup: "",
+        inLine: "",
     }
 
     async componentDidMount() {
@@ -21,6 +26,18 @@ class AdoptionPage extends Component {
             dog: firstDog,
             people
         })
+
+        setInterval(apiService.dequeuePerson(), 5000);
+    }
+
+    startAdopting = () => {
+        apiService.dequeuePerson();
+        apiService.getPeople().then(people => this.setState({ people }))
+        let random = getRandomInt(2)
+        console.log(random);
+        (random === 0)
+            ? apiService.dequeueAdoptedDog() && apiService.getDogs().then(dog => this.setState({dog}))
+            : apiService.dequeueAdoptedCat() && apiService.getCats().then(cat => this.setState({cat}));       
     }
 
     handleAdoptDogClick = (event) => {
@@ -43,10 +60,30 @@ class AdoptionPage extends Component {
             })
     }
 
+    handleSignupChange = (event) => {
+        event.preventDefault();
+        this.setState({
+            signup: event.target.value
+        })
+    }
+
     handleSignupSubmit = (event) => {
         event.preventDefault();
-
-        apiService.addPerson()
+        // create variable to know when to enable adopt buttons
+        this.setState({
+            inLine: this.state.signup
+        })
+        // console.log(`${this.state.signup} in handlesubmit`)        
+        apiService.addPerson(this.state.signup)
+        // update state to reflect changes to the adopter list
+        apiService.getPeople()
+            .then(people => this.setState({
+                people
+            }));
+        const adopting = setInterval(this.startAdopting(), 5000);
+        if (this.state.people.length === 1) {
+            clearInterval(adopting)
+        }               
     }
 
     render() {
@@ -68,9 +105,10 @@ class AdoptionPage extends Component {
                         <label htmlFor='adoption-sign-up'>Sign up to adopt!</label>
                         <input
                             name='signup'
-                            value='signup'>
+                            value={this.state.signup}
+                            onChange={event => this.handleSignupChange(event)}>
                         </input>
-                        <button>Get a fur baby!</button>
+                        <button onClick={this.handleSignupSubmit}>Get a fur baby!</button>
                     </form>
                 </section>
             </div>

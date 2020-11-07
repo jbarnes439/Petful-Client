@@ -56,12 +56,14 @@ const apiService = {
     },
 
     addPerson(person) {
+        let newPerson = { "name" : person}
+        console.log(`${JSON.stringify(newPerson)} in addPerson`)
         fetch(`${config.API_ENDPOINT}/people`, {
-            method: 'POST',
-            body: JSON.stringify(person),
+            method: 'POST',            
             headers: {
             "Content-Type": "application/json"
-            }
+            },
+            body: JSON.stringify(newPerson),
         })
     }
 }

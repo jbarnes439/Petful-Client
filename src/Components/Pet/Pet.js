@@ -4,7 +4,7 @@ import './Pet.css';
 const Pet = (props) => {
     return (
         <div className='pet-card'>
-            <img src={props.pet.imageURL} />
+            <img src={props.pet.imageURL} alt={props.pet.description} />
             <section>
                 <p>Age: {props.pet.age}</p>
                 <p>Breed: {props.pet.breed}</p>
