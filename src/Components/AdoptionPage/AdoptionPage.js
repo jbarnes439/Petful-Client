@@ -27,23 +27,29 @@ class AdoptionPage extends Component {
             people
         })
 
-        setInterval(this.intervalCondition(), 5000);
+        setInterval(this.intervalCondition, 10000);
     }
 
-    intervalCondition() {
-        if (this.state.people[0] !== this.state.inLine || this.state.people.length <= 1) {
+    intervalCondition = () => {    
+        if ((this.state.people.length >= 1 
+            && (this.state.people[0] !== this.state.inLine))) { 
+            // || this.state.people.length >= 1) {
+            console.log('condition was true')
             this.startAdopting();
-        }    
+        }
+        clearInterval(this.intervalCondition)    
     }
 
     startAdopting = () => {
+        console.log('start adopting ran')
         apiService.dequeuePerson();
-        apiService.getPeople().then(people => this.setState({ people }))
-        let random = getRandomInt(2)
-        console.log(random);
-        (random === 0)
-            ? apiService.dequeueAdoptedDog() && apiService.getDogs().then(dog => this.setState({dog}))
-            : apiService.dequeueAdoptedCat() && apiService.getCats().then(cat => this.setState({cat}));       
+        apiService.getPeople().then(people => this.setState({ people }))               
+        if (this.state.people.length % 2 === 0) {            
+            apiService.dequeueAdoptedDog() 
+            apiService.getDogs().then(dog => this.setState({dog})            
+        }            
+        apiService.dequeueAdoptedCat()
+        apiService.getCats().then(cat => this.setState({cat})       
     }
 
     handleAdoptDogClick = (event) => {
@@ -85,9 +91,7 @@ class AdoptionPage extends Component {
         apiService.getPeople()
             .then(people => this.setState({
                 people
-            }));
-        const adopting = setInterval(this.startAdopting(), 5000);
-                   
+            }));                
     }
 
     render() {
