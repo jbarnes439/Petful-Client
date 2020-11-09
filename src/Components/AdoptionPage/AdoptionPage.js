@@ -37,24 +37,8 @@ class AdoptionPage extends Component {
         if (this.state.people[0] == this.state.inLine) {
             this.setState({readyToAdopt: true})
         }
-        this.startAdopting();
-        // setInterval(this.intervalCondition, 10000);        
-    }
-    
-    // componentWillUnmount() {
-    //     clearInterval(this.intervalCondition)
-    // }
-
-    // intervalCondition = () => {
-    //     if ((this.state.people.length > 1
-    //         && (this.state.people[0] !== this.state.inLine)
-    //         )) {
-    //         // || this.state.people.length >= 1) {
-    //         console.log('condition was true')
-    //         this.startAdopting();
-    //     }
-    //     clearInterval(this.intervalCondition)        
-    // }
+        this.startAdopting();                
+    }    
 
     startAdopting = () => {
         let adoptionInterval = setInterval(() => {
@@ -116,8 +100,7 @@ class AdoptionPage extends Component {
         // create variable to know when to enable adopt buttons
         this.setState({
             inLine: this.state.signup
-        })
-        // console.log(`${this.state.signup} in handlesubmit`)        
+        })                
         apiService.addPerson(this.state.signup)
         // update state to reflect changes to the adopter list
         apiService.getPeople()
@@ -151,7 +134,7 @@ class AdoptionPage extends Component {
                 
             </div>
             <div>
-                {this.state.adopted ? <Confirmation /> : null}
+                {this.state.adopted ? <Confirmation adopter={this.state.inLine}/> : null}
             </div>
             <div className='signupForm'>
                     <form>
