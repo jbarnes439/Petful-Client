@@ -19,7 +19,8 @@ class AdoptionPage extends Component {
         inLine: "",
         turnToAdopt: "",
         readyToAdopt: false,
-        adopted: false,        
+        adopted: false,
+        error: null,        
     }    
 
     async componentDidMount() {
@@ -32,8 +33,9 @@ class AdoptionPage extends Component {
             dog: firstDog,
             people
         })
-
-        console.log('componetDidMount ' + this.state.people[0]);
+        .catch((res) => this.setState({ error: res.error }));
+        console.log(this.state.error);
+        
         if (this.state.people[0] == this.state.inLine) {
             this.setState({readyToAdopt: true})
         }
