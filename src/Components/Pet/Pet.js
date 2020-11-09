@@ -13,7 +13,7 @@ const Pet = (props) => {
                 <p>Name: {props.pet.name}</p>
                 <p>Story: {props.pet.story}</p>
             </section>
-            {(props.readyToAdopt === props.inline) ? 
+            {(props.readyToAdopt) ? 
             <button onClick={event => props.handleClick(event)}>Adopt me!</button>
             : <button onClick={event => props.handleClick(event)} disabled>Adopt me!</button>}
         </div>

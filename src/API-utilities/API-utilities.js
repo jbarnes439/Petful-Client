@@ -21,19 +21,13 @@ const apiService = {
 
     dequeueAdoptedDog() {
         fetch(`${config.API_ENDPOINT}/dogs`, {
-            method: 'DELETE',
-            headers: {
-            "Content-Type": "application/json"
-            }
+            method: 'DELETE',            
         })
     },
 
     dequeueAdoptedCat() {
         fetch(`${config.API_ENDPOINT}/cats`, {
-            method: 'DELETE',
-            headers: {
-            "Content-Type": "application/json"
-            }
+            method: 'DELETE',            
         })
     },
 

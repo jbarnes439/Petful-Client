@@ -2,6 +2,13 @@ import React, { Component } from 'react';
 import apiService from '../../API-utilities/API-utilities';
 import Pet from '../Pet/Pet';
 import People from '../People/People';
+import './AdoptionPage.css';
+import { Link, withRouter } from 'react-router-dom';
+import Confirmation from '../Confirmation/Confirmation';
+
+function getRandomInt(max) {
+    return Math.floor(Math.random() * Math.floor(max));
+}
 
 class AdoptionPage extends Component {
     state = {
@@ -10,8 +17,10 @@ class AdoptionPage extends Component {
         people: [],
         signup: "",
         inLine: "",
+        turnToAdopt: "",
         readyToAdopt: false,
-    }
+        adopted: false,        
+    }    
 
     async componentDidMount() {
         let firstCat = await apiService.getCats();
@@ -24,51 +33,74 @@ class AdoptionPage extends Component {
             people
         })
 
-        setInterval(this.intervalCondition, 10000);
-    }
-
-    intervalCondition = () => {    
-        if ((this.state.people.length >= 1 
-            && (this.state.people[0] !== this.state.inLine))) { 
-            // || this.state.people.length >= 1) {
-            console.log('condition was true')
-            this.startAdopting();
+        console.log('componetDidMount ' + this.state.people[0]);
+        if (this.state.people[0] == this.state.inLine) {
+            this.setState({readyToAdopt: true})
         }
-        clearInterval(this.intervalCondition)    
+        this.startAdopting();
+        // setInterval(this.intervalCondition, 10000);        
     }
+    
+    // componentWillUnmount() {
+    //     clearInterval(this.intervalCondition)
+    // }
+
+    // intervalCondition = () => {
+    //     if ((this.state.people.length > 1
+    //         && (this.state.people[0] !== this.state.inLine)
+    //         )) {
+    //         // || this.state.people.length >= 1) {
+    //         console.log('condition was true')
+    //         this.startAdopting();
+    //     }
+    //     clearInterval(this.intervalCondition)        
+    // }
 
     startAdopting = () => {
-        console.log('start adopting ran')
-        apiService.dequeuePerson();
-        apiService.getPeople().then(people => this.setState({ people }));               
-        if (this.state.people.length % 2 === 0) {
-            console.log('should adopt out dog')            
-            apiService.dequeueAdoptedDog() 
-            apiService.getDogs().then(dog => this.setState({dog}))            
-        } else {
-        console.log('should adopt out cat');            
-        apiService.dequeueAdoptedCat()
-        apiService.getCats().then(cat => this.setState({cat}))
-        }       
+        let adoptionInterval = setInterval(() => {
+            let queueFill = ['Julian', 'Bubbles', 'Jacob Collins', 'George Green', 'Sam Losco']
+            /* if person who signed up is the at the front of the queue
+               stop the interval and enable pet adoption */
+            if ((this.state.people[1] === this.state.inLine)) {
+                this.setState({readyToAdopt: true})
+                clearInterval(adoptionInterval)
+            }
+            // remove first person in line
+            apiService.dequeuePerson();
+            apiService.addPerson(queueFill[getRandomInt(4)]);
+            apiService.getPeople().then(people => this.setState({ people }));
+            // alternate between adopting out dog or cat       
+            if (this.state.people.length % 2 === 0) {            
+                apiService.dequeueAdoptedDog()
+                apiService.getDogs().then(dog => this.setState({ dog }))
+            } else {
+                apiService.dequeueAdoptedCat()
+                apiService.getCats().then(cat => this.setState({ cat }))
+            }
+        }, 5000)                
     }
 
     handleAdoptDogClick = (event) => {
         event.preventDefault();
         apiService.dequeueAdoptedDog();
+        apiService.dequeuePerson(this.state.people[0]);
+        apiService.getPeople().then(people => this.setState({ people }));
 
         apiService.getDogs()
             .then(dog => {
-                this.setState({ dog })
+                this.setState({ dog, readyToAdopt: false, adopted: true })
             })
     }
 
     handleAdoptCatClick = (event) => {
         event.preventDefault();
         apiService.dequeueAdoptedCat();
+        apiService.dequeuePerson(this.state.people[0]);
+        apiService.getPeople().then(people => this.setState({ people }));
 
         apiService.getCats()
             .then(cat => {
-                this.setState({ cat })
+                this.setState({ cat, readyToAdopt: false, adopted: true })
             })
     }
 
@@ -91,39 +123,50 @@ class AdoptionPage extends Component {
         apiService.getPeople()
             .then(people => this.setState({
                 people
-            }));                
+            }));
     }
 
     render() {
         return (
+        <div>
+            <div className='adoptionDiv'>                
+                <div className='centerDiv'>
+                    <People
+                        people={this.state.people} />
+                </div>
+                <div className='leftDiv'>
+                    <Pet
+                        readyToAdopt={this.state.readyToAdopt}
+                        inLine={this.state.inLine}
+                        pet={this.state.cat}
+                        handleClick={this.handleAdoptCatClick} />
+                </div>
+                <div className='rightDiv'>
+                    <Pet
+                        readyToAdopt={this.state.readyToAdopt}
+                        inLine={this.state.inLine}
+                        pet={this.state.dog}
+                        handleClick={this.handleAdoptDogClick} />
+                </div>
+                
+            </div>
             <div>
-                <Pet
-                    readyToAdopt={this.state.people[0]}
-                    inLine={this.state.inLine}
-                    pet={this.state.cat}
-                    handleClick={this.handleAdoptCatClick} />
-
-                <Pet
-                    readyToAdopt={this.state.people[0]}
-                    inLine={this.state.inLine}
-                    pet={this.state.dog}
-                    handleClick={this.handleAdoptDogClick} />
-
-                <People
-                    people={this.state.people} />
-
-                <section>
-                    <form className='signup'>
+                {this.state.adopted ? <Confirmation /> : null}
+            </div>
+            <div className='signupForm'>
+                    <form>
                         <label htmlFor='adoption-sign-up'>Sign up to adopt!</label>
                         <input
                             name='signup'
                             value={this.state.signup}
                             onChange={event => this.handleSignupChange(event)}>
                         </input>
-                        <button onClick={this.handleSignupSubmit}>Get a fur baby!</button>
+                        <button onClick={this.handleSignupSubmit}>Sign me up!</button>
                     </form>
-                </section>
-            </div>
+                </div>
+                <Link to='/'><button>About</button></Link>
+                
+        </div>
         )
     }
 }

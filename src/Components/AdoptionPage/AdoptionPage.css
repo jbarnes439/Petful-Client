@@ -1,0 +1,43 @@
+.signupForm {
+    width: auto;
+    margin: 16px auto;
+    border: 1px solid #eee;
+    box-shadow: 0 2px 3px #ccc;
+    padding: 16px;
+    text-align: center;
+  }
+
+.adoptionDiv {
+    display:flex;
+    flex-direction:column;
+}
+
+@media screen and (min-width: 1000px) {
+    .adoptionDiv {
+        display:flex;
+        flex-direction: row;
+        justify-content:space-around; 
+        flex: 1 1 0px;
+        flex-wrap: wrap;                      
+    }
+    
+    .leftDiv {
+        order: 1;
+        flex: 1 1 0px;
+    }
+
+    .centerDiv {
+        order: 2;
+        flex: 1 1 0px;
+    }
+
+    .rightDiv {
+        order: 3;
+        flex: 1 1 0px;
+    }
+    
+    .signupForm {
+        order: 4;
+        flex: 1 1 0px;
+    }
+}

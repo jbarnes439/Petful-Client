@@ -1,4 +1,6 @@
 import React from 'react';
+import { Link, withRouter } from 'react-router-dom';
+import './LandingPage.css'
 
 function LandingPage() {
     return (
@@ -19,6 +21,8 @@ function LandingPage() {
                 where the prospective owners are allowed to adopt in the order
                 in which they signed up to adopt.
             </section>
+            <Link to='/adopt'><button>Adopt!</button></Link>
+            <img src={require('../../images/cats-and-dogs.jpg')} alt='A group of cats and dogs waiting for you!' />
         </div>
     )
 }
