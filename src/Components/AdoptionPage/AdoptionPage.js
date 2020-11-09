@@ -20,27 +20,44 @@ class AdoptionPage extends Component {
         turnToAdopt: "",
         readyToAdopt: false,
         adopted: false,
-        error: null,        
-    }    
+        error: null,
+    }
 
     async componentDidMount() {
-        let firstCat = await apiService.getCats();
-        let firstDog = await apiService.getDogs();
-        let people = await apiService.getPeople();
+        // let firstCat = await apiService.getCats();
+        // let firstDog = await apiService.getDogs();
+        // let people = await apiService.getPeople();
 
-        this.setState({
-            cat: firstCat,
-            dog: firstDog,
-            people
-        })
-        .catch((res) => this.setState({ error: res.error }));
-        console.log(this.state.error);
-        
+        // this.setState({
+        //     cat: firstCat,
+        //     dog: firstDog,
+        //     people
+        // })
+        await apiService.getCats()
+            .then((res) => {
+                this.setState({ cat: res });
+            })
+            .catch((res) => this.setState({ error: res.error }));        
+
+        await apiService.getDogs()
+            .then((res) => {
+                this.setState({ dog: res });
+            })
+            .catch((res) => this.setState({ error: res.error }));
+
+        await apiService.getPeople()
+            .then((res) => {
+                this.setState({ people: res });
+            })
+            .catch((res) => this.setState({ error: res.error }));
+
+            console.log(this.state.error);
+
         if (this.state.people[0] == this.state.inLine) {
-            this.setState({readyToAdopt: true})
+            this.setState({ readyToAdopt: true })
         }
-        this.startAdopting();                
-    }    
+        this.startAdopting();
+    }
 
     startAdopting = () => {
         let adoptionInterval = setInterval(() => {
@@ -48,7 +65,7 @@ class AdoptionPage extends Component {
             /* if person who signed up is the at the front of the queue
                stop the interval and enable pet adoption */
             if ((this.state.people[1] === this.state.inLine)) {
-                this.setState({readyToAdopt: true})
+                this.setState({ readyToAdopt: true })
                 clearInterval(adoptionInterval)
             }
             // remove first person in line
@@ -56,14 +73,14 @@ class AdoptionPage extends Component {
             apiService.addPerson(queueFill[getRandomInt(4)]);
             apiService.getPeople().then(people => this.setState({ people }));
             // alternate between adopting out dog or cat       
-            if (this.state.people.length % 2 === 0) {            
+            if (this.state.people.length % 2 === 0) {
                 apiService.dequeueAdoptedDog()
                 apiService.getDogs().then(dog => this.setState({ dog }))
             } else {
                 apiService.dequeueAdoptedCat()
                 apiService.getCats().then(cat => this.setState({ cat }))
             }
-        }, 5000)                
+        }, 5000)
     }
 
     handleAdoptDogClick = (event) => {
@@ -102,7 +119,7 @@ class AdoptionPage extends Component {
         // create variable to know when to enable adopt buttons
         this.setState({
             inLine: this.state.signup
-        })                
+        })
         apiService.addPerson(this.state.signup)
         // update state to reflect changes to the adopter list
         apiService.getPeople()
@@ -113,32 +130,32 @@ class AdoptionPage extends Component {
 
     render() {
         return (
-        <div>
-            <div className='adoptionDiv'>                
-                <div className='centerDiv'>
-                    <People
-                        people={this.state.people} />
-                </div>
-                <div className='leftDiv'>
-                    <Pet
-                        readyToAdopt={this.state.readyToAdopt}
-                        inLine={this.state.inLine}
-                        pet={this.state.cat}
-                        handleClick={this.handleAdoptCatClick} />
-                </div>
-                <div className='rightDiv'>
-                    <Pet
-                        readyToAdopt={this.state.readyToAdopt}
-                        inLine={this.state.inLine}
-                        pet={this.state.dog}
-                        handleClick={this.handleAdoptDogClick} />
-                </div>
-                
-            </div>
             <div>
-                {this.state.adopted ? <Confirmation adopter={this.state.inLine}/> : null}
-            </div>
-            <div className='signupForm'>
+                <div className='adoptionDiv'>
+                    <div className='centerDiv'>
+                        <People
+                            people={this.state.people} />
+                    </div>
+                    <div className='leftDiv'>
+                        <Pet
+                            readyToAdopt={this.state.readyToAdopt}
+                            inLine={this.state.inLine}
+                            pet={this.state.cat}
+                            handleClick={this.handleAdoptCatClick} />
+                    </div>
+                    <div className='rightDiv'>
+                        <Pet
+                            readyToAdopt={this.state.readyToAdopt}
+                            inLine={this.state.inLine}
+                            pet={this.state.dog}
+                            handleClick={this.handleAdoptDogClick} />
+                    </div>
+
+                </div>
+                <div>
+                    {this.state.adopted ? <Confirmation adopter={this.state.inLine} /> : null}
+                </div>
+                <div className='signupForm'>
                     <form>
                         <label htmlFor='adoption-sign-up'>Sign up to adopt!</label>
                         <input
@@ -150,8 +167,8 @@ class AdoptionPage extends Component {
                     </form>
                 </div>
                 <Link to='/'><button>About</button></Link>
-                
-        </div>
+
+            </div>
         )
     }
 }
