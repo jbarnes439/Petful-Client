@@ -2,7 +2,7 @@ import config from '../config';
 
 const apiService = {
     getCats() {
-        return fetch(`${config.API_ENDPOINT}/cats`)
+        return fetch(`${config.REACT_APP_API_BASE}/cats`)
             .then(res =>
                 (!res.ok)
                     ? res.json().then(e => Promise.reject(e))
@@ -11,7 +11,7 @@ const apiService = {
     },
 
     getDogs() {
-        return fetch(`${config.API_ENDPOINT}/dogs`)
+        return fetch(`${config.REACT_APP_API_BASE}/dogs`)
             .then(res =>
                 (!res.ok)
                     ? res.json().then(e => Promise.reject(e))
@@ -20,19 +20,19 @@ const apiService = {
     },
 
     dequeueAdoptedDog() {
-        fetch(`${config.API_ENDPOINT}/dogs`, {
+        fetch(`${config.REACT_APP_API_BASE}/dogs`, {
             method: 'DELETE',            
         })
     },
 
     dequeueAdoptedCat() {
-        fetch(`${config.API_ENDPOINT}/cats`, {
+        fetch(`${config.REACT_APP_API_BASE}/cats`, {
             method: 'DELETE',            
         })
     },
 
     getPeople() {
-        return fetch(`${config.API_ENDPOINT}/people`)
+        return fetch(`${config.REACT_APP_API_BASE}/people`)
             .then(res =>
                 (!res.ok)
                     ? res.json().then(e => Promise.reject(e))
@@ -41,7 +41,7 @@ const apiService = {
     },
 
     dequeuePerson() {
-        fetch(`${config.API_ENDPOINT}/people`, {
+        fetch(`${config.REACT_APP_API_BASE}/people`, {
             method: 'DELETE',
             headers: {
             "Content-Type": "application/json"
@@ -51,7 +51,7 @@ const apiService = {
 
     addPerson(person) {
         let newPerson = { "name" : person}        
-        fetch(`${config.API_ENDPOINT}/people`, {
+        fetch(`${config.REACT_APP_API_BASE}/people`, {
             method: 'POST',            
             headers: {
             "Content-Type": "application/json"
