@@ -2,9 +2,10 @@
     width: auto;
     margin: 16px auto;
     border: 1px solid #eee;
-    box-shadow: 0 2px 3px #ccc;
+    box-shadow: 0 2px 3px rgb(1, 1, 196);
     padding: 16px;
     text-align: center;
+    background-color: white;
   }
 
 .adoptionDiv {

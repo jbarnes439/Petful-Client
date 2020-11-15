@@ -64,7 +64,7 @@ class AdoptionPage extends Component {
             let queueFill = ['Julian', 'Bubbles', 'Jacob Collins', 'George Green', 'Sam Losco']
             /* if person who signed up is the at the front of the queue
                stop the interval and enable pet adoption */
-            if ((this.state.people[1] === this.state.inLine)) {
+            if ((this.state.people[0] === this.state.inLine) && (this.state.people[0] === this.state.inLine)) {
                 this.setState({ readyToAdopt: true })
                 clearInterval(adoptionInterval)
             }
