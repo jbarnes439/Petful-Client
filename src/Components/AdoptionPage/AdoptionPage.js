@@ -17,22 +17,12 @@ class AdoptionPage extends Component {
         people: [],
         signup: "",
         inLine: "",
-        turnToAdopt: "",
-        readyToAdopt: false,
+        turnToAdopt: "",        
         adopted: false,
         error: null,
     }
 
-    async componentDidMount() {
-        // let firstCat = await apiService.getCats();
-        // let firstDog = await apiService.getDogs();
-        // let people = await apiService.getPeople();
-
-        // this.setState({
-        //     cat: firstCat,
-        //     dog: firstDog,
-        //     people
-        // })
+    async componentDidMount() {        
         await apiService.getCats()
             .then((res) => {
                 this.setState({ cat: res });
@@ -64,10 +54,9 @@ class AdoptionPage extends Component {
             let queueFill = ['Julian', 'Bubbles', 'Jacob Collins', 'George Green', 'Sam Losco']
             /* if person who signed up is the at the front of the queue
                stop the interval and enable pet adoption */
-            if ((this.state.people[0] === this.state.inLine) && (this.state.people[0] === this.state.inLine)) {
-                this.setState({ readyToAdopt: true })
-                clearInterval(adoptionInterval)
-            }
+            if (this.state.people[0] === this.state.inLine) {
+                clearInterval(adoptionInterval)                
+            }            
             // remove first person in line
             apiService.dequeuePerson();
             apiService.addPerson(queueFill[getRandomInt(4)]);
@@ -91,7 +80,7 @@ class AdoptionPage extends Component {
 
         apiService.getDogs()
             .then(dog => {
-                this.setState({ dog, readyToAdopt: false, adopted: true })
+                this.setState({ dog, adopted: true })
             })
     }
 
@@ -103,7 +92,7 @@ class AdoptionPage extends Component {
 
         apiService.getCats()
             .then(cat => {
-                this.setState({ cat, readyToAdopt: false, adopted: true })
+                this.setState({ cat, adopted: true })
             })
     }
 
@@ -137,15 +126,15 @@ class AdoptionPage extends Component {
                             people={this.state.people} />
                     </div>
                     <div className='leftDiv'>
-                        <Pet
-                            readyToAdopt={this.state.readyToAdopt}
+                        <Pet                            
+                            people={this.state.people}
                             inLine={this.state.inLine}
                             pet={this.state.cat}
                             handleClick={this.handleAdoptCatClick} />
                     </div>
                     <div className='rightDiv'>
-                        <Pet
-                            readyToAdopt={this.state.readyToAdopt}
+                        <Pet                            
+                            people={this.state.people}
                             inLine={this.state.inLine}
                             pet={this.state.dog}
                             handleClick={this.handleAdoptDogClick} />
