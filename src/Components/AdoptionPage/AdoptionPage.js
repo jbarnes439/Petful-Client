@@ -39,9 +39,7 @@ class AdoptionPage extends Component {
             .then((res) => {
                 this.setState({ people: res });
             })
-            .catch((res) => this.setState({ error: res.error }));
-
-            console.log(this.state.error);
+            .catch((res) => this.setState({ error: res.error }));            
 
         if (this.state.people[0] == this.state.inLine) {
             this.setState({ readyToAdopt: true })
