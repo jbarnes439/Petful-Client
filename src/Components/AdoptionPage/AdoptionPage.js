@@ -81,7 +81,9 @@ class AdoptionPage extends Component {
         apiService.getDogs()
             .then(dog => {
                 this.setState({ dog, adopted: true })
-            })
+            });
+        
+        this.startAdopting();
     }
 
     handleAdoptCatClick = (event) => {
@@ -93,7 +95,9 @@ class AdoptionPage extends Component {
         apiService.getCats()
             .then(cat => {
                 this.setState({ cat, adopted: true })
-            })
+            });
+
+        this.startAdopting();
     }
 
     handleSignupChange = (event) => {
@@ -107,6 +111,8 @@ class AdoptionPage extends Component {
         event.preventDefault();
         // create variable to know when to enable adopt buttons
         this.setState({
+            signup: '',
+            adopted: false,
             inLine: this.state.signup
         })
         apiService.addPerson(this.state.signup)
@@ -118,6 +124,9 @@ class AdoptionPage extends Component {
     }
 
     render() {
+
+
+
         return (
             <div>
                 <div className='adoptionDiv'>
